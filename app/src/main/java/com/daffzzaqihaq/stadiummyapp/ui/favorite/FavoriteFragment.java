@@ -7,8 +7,12 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.daffzzaqihaq.stadiummyapp.R;
@@ -45,6 +49,8 @@ public class FavoriteFragment extends Fragment implements FavoriteContract.View 
         View view = inflater.inflate(R.layout.fragment_favorite, container, false);
         unbinder = ButterKnife.bind(this, view);
 
+        setHasOptionsMenu(true);
+
         favoritePresenter.getDataListTeams(getContext());
 
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -80,5 +86,27 @@ public class FavoriteFragment extends Fragment implements FavoriteContract.View 
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        inflater.inflate(R.menu.search, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.search);
+        final android.support.v7.widget.SearchView searchView = (android.support.v7.widget.SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                favoritePresenter.searchTeams(getContext(), s);
+                return false;
+            }
+        });
     }
 }

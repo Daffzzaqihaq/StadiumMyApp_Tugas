@@ -18,4 +18,5 @@ public interface ApiInterface {
     Call<StadiumResponse> getDetail(
             @Query("id") int id
     );
+
 }
